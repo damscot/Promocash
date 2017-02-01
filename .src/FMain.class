@@ -1,0 +1,156 @@
+' Gambas class file
+
+Private Arttable[7] As String
+Public hAsyncClient As New HttpClient As "hAsyncClient"
+Private sDownloadBuffer As String
+Private Pimage As String = Temp$()
+Private Fimage As File
+
+
+Public Sub _new()
+  
+  With GridView1
+    .Columns.count = 7
+    .Columns[0].Title = "Code"
+    .Columns[0].Width = 140
+    .Columns[0].Alignment = 3
+    .Columns[1].Title = "Intitule"
+    .Columns[1].Width = 500
+    .Columns[1].Alignment = 3
+    .Columns[2].Title = "Px PCash"
+    .Columns[2].Width = 120
+    .Columns[2].Alignment = 3
+    .Columns[3].Title = "Px U. PCash"
+    .Columns[3].Width = 120
+    .Columns[3].Alignment = 3
+    .Columns[4].Title = "Px HT Jeanne"
+    .Columns[4].Width = 120
+    .Columns[4].Alignment = 3
+    .Columns[5].Title = "Px TTC Jeanne"
+    .Columns[5].Width = 120
+    .Columns[5].Alignment = 3
+    .Columns[6].Title = "Cond."
+    .Columns[6].Width = 40
+    .Columns[6].Alignment = 3
+  End With
+  
+End
+
+
+Public Sub ComboBox1_Click()
+
+Refresh()
+
+End
+
+Public Sub Refresh()
+
+  Dim rs As Result
+  
+  If ComboBox1.Index == "0"
+    Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code where prixht_unite = art_pbht")
+  Else If ComboBox1.Index == "1"
+    Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code where prixht_unite <> art_pbht")
+  Else If ComboBox1.Index == "2"
+    Utils.Base2(GridView1, "SELECT * FROM Laurux01.Fiches_Art Left Join Promocash.Articles on Articles.cbarre = Fiches_Art.art_code where cbarre is Null and art_four = 401002")
+  Endif
+  
+  GridView1.Refresh()
+  ImageView1.Image = Null
+  
+End
+
+Public Sub GridView1_Data(Row As Integer, Column As Integer)
+
+  Dim sline As String
+
+  With Utils
+    ArtTable[0] = "art_code"
+    ArtTable[1] = "art_design"
+    ArtTable[2] = "prixht"
+    ArtTable[3] = "prixht_unite"
+    ArtTable[4] = "art_pbht"
+    ArtTable[5] = "art_pvttc"
+    ArtTable[6] = "cond"
+    .rs2.MoveTo(Row)
+    If .rs2["art_suspendu"] Then
+      GridView1.Data.Background = &HBFBFBF
+    Else If (ComboBox1.Index == "1") Then
+      If ((Val(.cpoint(.rs2["prixht_unite"])) - .rs2["art_pbht"]) > 0.10)
+        GridView1.Data.Background = &HFF9FA0
+      Else If ((Val(.cpoint(.rs2["prixht_unite"])) - .rs2["art_pbht"]) > 0)
+        GridView1.Data.Background = &HFFCF9F
+      Else If ((Val(.cpoint(.rs2["prixht_unite"])) - .rs2["art_pbht"]) < 0.5)
+        GridView1.Data.Background = &H9FCFFF
+      Endif
+    Endif
+    Try GridView1.data.Text = Str(.rs2[Arttable[Column]])
+  End With
+
+End
+
+
+Public Sub GridView1_Click()
+
+  With Utils
+    .rs2.MoveTo(GridView1.Row)
+    If (.rs2["image"])
+      DownloadAsync(.rs2["image"])
+    Else
+      ImageView1.Image = Image.Load("none.jpeg")
+    Endif
+  End With
+ 
+End
+
+
+
+
+Public Sub DownloadAsync(URL As String)
+
+  sDownloadBuffer = ""
+  hAsyncClient.URL = URL
+  hAsyncClient.TimeOut = 20
+  hAsyncClient.Async = True
+  hAsyncClient.Get()
+
+End
+
+Public Sub hAsyncClient_Connect()
+  sDownloadBuffer = ""
+  'Print "Connected to " & hAsyncClient.URL
+
+End
+
+Public Sub hAsyncClient_Read()
+
+  Dim sBuffer As String
+
+  sBuffer = Read #Last, Lof(Last)
+  sDownloadBuffer &= sBuffer
+
+End
+
+Public Sub hAsyncClient_Error()
+
+  Print "Error " & hAsyncClient.Status & " while downloading " & hAsyncClient.URL
+
+End
+
+Public Sub hAsyncClient_Finished()
+
+  'Print sDownloadBuffer
+  Dim Im As Image
+  Dim Im2 As Image
+  Fimage = Open Pimage For Read Write Create
+  Fimage.Save(PImage, sDownloadBuffer)
+  Fimage.Close
+  Im = Image.Load(PImage)
+  Try Kill PImage
+  Im2 = Im.Stretch(ImageView1.Width, ImageView1.Height)
+  ImageView1.Image = Im2
+  ImageView1.Refresh
+
+End
+
+
