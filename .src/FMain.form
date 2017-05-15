@@ -24,4 +24,8 @@
     MoveScaled(107,4,16,4)
     Text = ("MAJ suspendus")
   }
+  { Button3 Button
+    MoveScaled(125,4,16,4)
+    Text = ("RAZ suspendus")
+  }
 }

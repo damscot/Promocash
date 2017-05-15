@@ -162,7 +162,7 @@ Public Sub Button1_Click()
   rResult = Utils.db.Exec("Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code")
   If rResult.Available Then
     Repeat
-      Utils.db.Exec("Update Laurux01.Fiches_Art SET art_cfour = &2 where art_code = &1", rResult!art_code, rResult!code)
+      Utils.db.Exec("Update Laurux01.Fiches_Art SET art_cfour = &2, art_suspendu = 0 where art_code = &1", rResult!art_code, rResult!code)
     Until rResult.MoveNext()
   Endif
   
@@ -179,5 +179,18 @@ Public Sub Button2_Click()
     Until rResult.MoveNext()
   Endif
   
+
+End
+
+Public Sub Button3_Click()
+
+  Dim rResult As Result
+  
+  rResult = Utils.db.Exec("SELECT * FROM Laurux01.Fiches_Art Left Join Promocash.Articles on Articles.cbarre = Fiches_Art.art_code where cbarre is Null and art_four = 401002")
+  If rResult.Available Then
+    Repeat
+      Utils.db.Exec("Update Laurux01.Fiches_Art SET art_suspendu = 0 where art_code = &1", rResult!art_code, rResult!code)
+    Until rResult.MoveNext()
+  Endif
 
 End
