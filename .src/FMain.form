@@ -16,4 +16,12 @@
     MoveScaled(118,52,30,30)
     Border = False
   }
+  { Button1 Button
+    MoveScaled(88,4,16,4)
+    Text = ("MAJ code four")
+  }
+  { Button2 Button
+    MoveScaled(107,4,16,4)
+    Text = ("MAJ suspendus")
+  }
 }
