@@ -1,19 +1,19 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,157,90)
+  MoveScaled(0,0,145,83)
   { GridView1 GridView
-    MoveScaled(0,10,155,40)
+    MoveScaled(0,10,144,40)
     ShowCursor = True
     Header = GridView.Both
     Sorted = True
   }
   { ComboBox1 ComboBox
-    MoveScaled(0,4,83,4)
-    List = [("Produits Conforme au site Promocash"), ("Produits Different du site Promocash"), ("Produits Inexistant sur site Promocash")]
+    MoveScaled(0,4,82,4)
+    List = [("Produits existant sur site Promocash"), ("Produits tarif different au site Promocash"), ("Produits inexistant sur site Promocash")]
   }
   { ImageView1 ImageView
-    MoveScaled(118,52,30,30)
+    MoveScaled(114,52,30,30)
     Border = False
   }
   { Button1 Button

@@ -1,6 +1,6 @@
 ' Gambas class file
 
-Private Arttable[7] As String
+Private Arttable[8] As String
 Public hAsyncClient As New HttpClient As "hAsyncClient"
 Private sDownloadBuffer As String
 Private Pimage As String = Temp$()
@@ -8,30 +8,42 @@ Private Fimage As File
 
 
 Public Sub _new()
-  
+  Dim i As Integer = 0
   With GridView1
-    .Columns.count = 7
-    .Columns[0].Title = "Code"
-    .Columns[0].Width = 140
-    .Columns[0].Alignment = 3
-    .Columns[1].Title = "Intitule"
-    .Columns[1].Width = 500
-    .Columns[1].Alignment = 3
-    .Columns[2].Title = "Px PCash"
-    .Columns[2].Width = 120
-    .Columns[2].Alignment = 3
-    .Columns[3].Title = "Px U. PCash"
-    .Columns[3].Width = 120
-    .Columns[3].Alignment = 3
-    .Columns[4].Title = "Px HT Jeanne"
-    .Columns[4].Width = 120
-    .Columns[4].Alignment = 3
-    .Columns[5].Title = "Px TTC Jeanne"
-    .Columns[5].Width = 120
-    .Columns[5].Alignment = 3
-    .Columns[6].Title = "Cond."
-    .Columns[6].Width = 40
-    .Columns[6].Alignment = 3
+    
+    .Columns.count = 8
+    .Columns[i].Title = "CodeBarre"
+    .Columns[i].Width = 100
+    .Columns[i].Alignment = 3
+    Inc i
+    .Columns[i].Title = "CodePromo"
+    .Columns[i].Width = 100
+    .Columns[i].Alignment = 3
+    Inc i
+    .Columns[i].Title = "Intitule"
+    .Columns[i].Width = 400
+    .Columns[i].Alignment = 3
+    Inc i
+    .Columns[i].Title = "Px PCash"
+    .Columns[i].Width = 100
+    .Columns[i].Alignment = 3
+    Inc i
+    .Columns[i].Title = "Px U.PCash"
+    .Columns[i].Width = 100
+    .Columns[i].Alignment = 3
+    Inc i
+    .Columns[i].Title = "Px HT.Jea."
+    .Columns[i].Width = 100
+    .Columns[i].Alignment = 3
+    Inc i
+    .Columns[i].Title = "Px TTC.Jea."
+    .Columns[i].Width = 100
+    .Columns[i].Alignment = 3
+    Inc i
+    .Columns[i].Title = "Cond."
+    .Columns[i].Width = 30
+    .Columns[i].Alignment = 3
+
   End With
   
 End
@@ -48,7 +60,7 @@ Public Sub Refresh()
   Dim rs As Result
   
   If ComboBox1.Index == "0"
-    Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code where prixht_unite = art_pbht")
+    Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code")
   Else If ComboBox1.Index == "1"
     Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code where prixht_unite <> art_pbht")
   Else If ComboBox1.Index == "2"
@@ -66,25 +78,34 @@ Public Sub GridView1_Data(Row As Integer, Column As Integer)
 
   With Utils
     ArtTable[0] = "art_code"
-    ArtTable[1] = "art_design"
-    ArtTable[2] = "prixht"
-    ArtTable[3] = "prixht_unite"
-    ArtTable[4] = "art_pbht"
-    ArtTable[5] = "art_pvttc"
-    ArtTable[6] = "cond"
+    ArtTable[1] = "code"
+    ArtTable[2] = "art_design"
+    ArtTable[3] = "prixht"
+    ArtTable[4] = "prixht_unite"
+    ArtTable[5] = "art_pbht"
+    ArtTable[6] = "art_pvttc"
+    ArtTable[7] = "cond"
     .rs2.MoveTo(Row)
     If .rs2["art_suspendu"] Then
       GridView1.Data.Background = &HBFBFBF
-    Else If (ComboBox1.Index == "1") Then
+    Else If (ComboBox1.Index <= 1) Then
       If ((Val(.cpoint(.rs2["prixht_unite"])) - .rs2["art_pbht"]) > 0.10)
         GridView1.Data.Background = &HFF9FA0
       Else If ((Val(.cpoint(.rs2["prixht_unite"])) - .rs2["art_pbht"]) > 0)
         GridView1.Data.Background = &HFFCF9F
+      Else If ((Val(.cpoint(.rs2["prixht_unite"])) - .rs2["art_pbht"]) = 0)
+        GridView1.Data.Background = &FFFFFFF
       Else If ((Val(.cpoint(.rs2["prixht_unite"])) - .rs2["art_pbht"]) < 0.5)
         GridView1.Data.Background = &H9FCFFF
       Endif
     Endif
     Try GridView1.data.Text = Str(.rs2[Arttable[Column]])
+    If Column = 2 Then
+      GridView1.Data.Font = Font["Courrier, 6"]
+    Else
+      GridView1.Data.Font = Font["Courrier, 8"]
+    Endif
+    
   End With
 
 End
