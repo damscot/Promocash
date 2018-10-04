@@ -60,11 +60,11 @@ Public Sub Refresh()
   Dim rs As Result
   
   If ComboBox1.Index == "0"
-    Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code")
+    Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_CdBarre On Articles.cbarre = Fiches_CdBarre.codeb Left Join Laurux01.Fiches_Art On Fiches_CdBarre.codep = Fiches_Art.art_code")
   Else If ComboBox1.Index == "1"
-    Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code where prixht_unite <> art_pbht")
+    Utils.Base2(GridView1, "Select * From Promocash.Articles Left Join Laurux01.Fiches_CdBarre On Articles.cbarre = Fiches_CdBarre.codeb Left Join Laurux01.Fiches_Art On Fiches_CdBarre.codep = Fiches_Art.art_code where prixht_unite <> art_pbht")
   Else If ComboBox1.Index == "2"
-    Utils.Base2(GridView1, "SELECT * FROM Laurux01.Fiches_Art Left Join Promocash.Articles on Articles.cbarre = Fiches_Art.art_code where cbarre is Null and art_four = 401002")
+    Utils.Base2(GridView1, "SELECT * FROM Laurux01.Fiches_CdBarre Left Join Laurux01.Fiches_Art On Fiches_CdBarre.codep = Fiches_Art.art_code Left Join Promocash.Articles on Articles.cbarre = Fiches_CdBarre.codeb where Articles.cbarre is Null and art_four = 401002")
   Endif
   
   GridView1.Refresh()
@@ -180,7 +180,7 @@ Public Sub Button1_Click()
 
   Dim rResult As Result
   
-  rResult = Utils.db.Exec("Select * From Promocash.Articles Left Join Laurux01.Fiches_Art On Articles.cbarre = Fiches_Art.art_code")
+  rResult = Utils.db.Exec("Select * From Promocash.Articles Left Join Laurux01.Fiches_CdBarre On Articles.cbarre = Fiches_CdBarre.codeb Left Join Laurux01.Fiches_Art On Fiches_CdBarre.codep = Fiches_Art.art_code")
   If rResult.Available Then
     Repeat
       Utils.db.Exec("Update Laurux01.Fiches_Art SET art_cfour = &2, art_suspendu = 0 where art_code = &1", rResult!art_code, rResult!code)
@@ -193,10 +193,10 @@ Public Sub Button2_Click()
 
   Dim rResult As Result
   
-  rResult = Utils.db.Exec("SELECT * FROM Laurux01.Fiches_Art Left Join Promocash.Articles on Articles.cbarre = Fiches_Art.art_code where cbarre is Null and art_four = 401002")
+  rResult = Utils.db.Exec("SELECT * FROM Laurux01.Fiches_CdBarre Left Join Laurux01.Fiches_Art On Fiches_CdBarre.codep = Fiches_Art.art_code Left Join Promocash.Articles on Articles.cbarre = Fiches_CdBarre.codeb where Articles.cbarre is Null and art_four = 401002")
   If rResult.Available Then
     Repeat
-      Utils.db.Exec("Update Laurux01.Fiches_Art SET art_suspendu = 1 where art_code = &1", rResult!art_code, rResult!code)
+      Utils.db.Exec("Update Laurux01.Fiches_Art SET art_suspendu = 1 where art_code = &1", rResult!art_code)
     Until rResult.MoveNext()
   Endif
   
@@ -207,10 +207,10 @@ Public Sub Button3_Click()
 
   Dim rResult As Result
   
-  rResult = Utils.db.Exec("SELECT * FROM Laurux01.Fiches_Art Left Join Promocash.Articles on Articles.cbarre = Fiches_Art.art_code where cbarre is Null and art_four = 401002")
+  rResult = Utils.db.Exec("SELECT * FROM Laurux01.Fiches_CdBarre Left Join Laurux01.Fiches_Art On Fiches_CdBarre.codep = Fiches_Art.art_code Left Join Promocash.Articles on Articles.cbarre = Fiches_CdBarre.codeb where Articles.cbarre is Null and art_four = 401002")
   If rResult.Available Then
     Repeat
-      Utils.db.Exec("Update Laurux01.Fiches_Art SET art_suspendu = 0 where art_code = &1", rResult!art_code, rResult!code)
+      Utils.db.Exec("Update Laurux01.Fiches_Art SET art_suspendu = 0 where art_code = &1", rResult!art_code)
     Until rResult.MoveNext()
   Endif
 
